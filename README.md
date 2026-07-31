@@ -10,6 +10,7 @@ mid-reason. Install only the ones you want.
 | **[fp-honesty](./plugins/fp-honesty)** | Tags each claim with how grounded it is: 🟢 verified · 🟡 inferred · 🟠 recalled · 🔴 guess | `/fp-honesty:mode` |
 | **[fp-sicem](./plugins/fp-sicem)** | Rewrites the em-dash (and its hard-to-read cousins) into punctuation anyone can read at speed | `/fp-sicem:mode` |
 | **[fp-minify](./plugins/fp-minify)** | Trims comments that just restate the code; keeps the ones that earn their place | `/fp-minify:mode` |
+| **[fp-yoohoo](./plugins/fp-yoohoo)** | Brings the terminal to the front when Claude stops to ask you something | `/fp-yoohoo:mode` |
 
 
 
@@ -70,6 +71,15 @@ re-parse, across ordinary sentences:
     processed++;
     try { run(job); } catch { retryList.push(job); }
   }
+```
+
+**fp-yoohoo**: you moved to the browser, and Claude hit a permission prompt.
+
+```text
+  without  →  the prompt sits there for eleven minutes, until you think to look.
+
+  with     →  the terminal window comes to the front the moment it asks.
+              already looking at it? nothing moves.
 ```
 
 ## The plugins
@@ -164,16 +174,40 @@ their place**, and only ever touches comments, never what the code does.
   over a file, dir, or the current focus, and shows what it'll remove before
   deleting a lot at once.
 
+### fp-yoohoo — the terminal comes to you, not the other way round
+
+Claude runs for minutes at a stretch, so you switch to something else. Then it
+stops and waits on you, and the session sits idle until you happen to look.
+[fp-yoohoo](./plugins/fp-yoohoo) makes that impossible to miss by bringing the
+terminal window to the foreground the moment a prompt needs an answer.
+
+- **Fires when a human is being waited on.** Permission prompts, question and
+  plan dialogs, an agent blocked on input. Turn end is deliberately not wired up,
+  because a raise after every single reply is a raise you learn to ignore. The
+  60-second idle tick is available too, opt-in.
+- **It knows when to stay put.** If the terminal already has focus, nothing
+  moves. You never get yanked around while you are sitting there watching it work.
+- **It raises the right window anywhere.** KDE Plasma on Wayland (through a
+  temporary KWin script over D-Bus, since Wayland forbids a client from raising
+  itself), Hyprland, sway, X11, macOS and Windows. No extra packages on any of
+  them. Where there is no local window to raise, such as tmux or ssh, it rings
+  the bell and posts a desktop notification instead.
+- **Modes:** `on` (raise the window, the default), `hint` (bell and notification
+  only, never a focus steal), `off`. Control with `/fp-yoohoo:mode`, and prove it
+  works with `/fp-yoohoo:mode test`.
+
 ## The idea behind the plaza
 
 Every plugin here is **behavioural** and intervenes only at the *edges* of a task,
-before it or after it, never mid-reasoning. They come in two families:
+before it or after it, never mid-reasoning. They come in three families:
 
 - **Behavioral.** Surface and persist the AI's state, changing nothing about
   what it decides (`fp-honesty`).
 - **Influential.** Shape *how* the model approaches a task, but only by setting
   a prior at the task edge that you've consented to (`fp-barbeque`, `fp-minify`,
   `fp-sicem`).
+- **Mechanical.** Change nothing about the model at all, and act only on the
+  machine around it (`fp-yoohoo`).
 
 The invariant the whole plaza keeps: **never steer the model mid-reason.**
 

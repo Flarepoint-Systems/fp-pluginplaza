@@ -30,6 +30,12 @@
       "source": "./plugins/fp-sicem",
       "description": "Readable-prose mode (\"sic 'em-dash\"). In the prose the model writes (READMEs, docs, markdown, PR and commit bodies) it defaults the em-dash out of existence, replacing it and its cousins (semicolon, colon-as-drama, long dash-parentheticals) with clear connectors that read well for every English reader, non-native ones included. Clearer and cleaner, never dumbed down. Prose artifacts only; not chat, not code, not code comments (fp-minify's turf). Sets a prior at the task edge; never steers mid-solve. Modes: off, on (default).",
       "category": "productivity"
+    },
+    {
+      "name": "fp-yoohoo",
+      "source": "./plugins/fp-yoohoo",
+      "description": "Terminal-recall mode. When Claude Code stops to ask you something (a permission prompt, a question dialog, an agent blocked on input) it brings the terminal window to the foreground, so a waiting session is impossible to miss. Skips the raise when the terminal already has focus. Raises windows on KDE, Hyprland, sway, X11, macOS and Windows, with a bell and desktop notification where no window can be reached. Pure mechanism. It never touches what the model says or does. Modes: off, hint, on (default).",
+      "category": "productivity"
     }
   ]
 }
