@@ -9,7 +9,7 @@ mid-reason. Install only the ones you want.
 | **[fp-barbeque](./plugins/fp-barbeque)** | Grills you toward mutual understanding *before* it writes code on fuzzy-scope tasks | `/fp-barbeque:mode` |
 | **[fp-honesty](./plugins/fp-honesty)** | Tags each claim with how grounded it is: 🟢 verified · 🟡 inferred · 🟠 recalled · 🔴 guess | `/fp-honesty:mode` |
 | **[fp-sicem](./plugins/fp-sicem)** | Rewrites the em-dash (and its hard-to-read cousins) into punctuation anyone can read at speed | `/fp-sicem:mode` |
-| **[fp-minify](./plugins/fp-minify)** | Trims comments that just restate the code; keeps the ones that earn their place | `/fp-minify:mode` |
+| **[fp-minify](./plugins/fp-minify)** | Trims comments that just restate the code, keeps the ones that earn their place, capped at one line | `/fp-minify:mode` |
 | **[fp-yoohoo](./plugins/fp-yoohoo)** | Brings the terminal to the front when Claude stops to ask you something | `/fp-yoohoo:mode` |
 
 
@@ -161,11 +161,20 @@ their place**, and only ever touches comments, never what the code does.
 
 - **A comment must carry what the code can't.** A non-obvious *why* (so a reader
   won't "fix" it back), or meaning a name can't hold (config values, magic
-  numbers, units, invariants, constraints). Earned comments stay self-contained
-  and short. Deep backstory goes to the commit message, not the code.
+  numbers, units, invariants, constraints).
+- **One line, hard.** An earned comment is a single self-contained line, with no
+  "the reasoning needs room" exception to negotiate past. A why that won't fit
+  gets split into one-liners at their own anchors, or trimmed to what the reader
+  must have.
+- **The investigation is not the comment.** Measurements, sample counts, rejected
+  alternatives, and what broke last time feel essential right after you find
+  them. They go in the commit message, where they stay findable without sitting
+  on the code forever.
+- **Density counts too.** Most functions need zero comments. A comment on every
+  stanza means they aren't earning their place, however short each one is.
 - **Docstrings are exempt.** JSDoc/TSDoc, Python docstrings, and godoc are caller
-  contracts and stay, but a doc-*position* essay that's really inline narration
-  still gets trimmed.
+  contracts and keep their multi-line shape, but a doc-*position* essay that's
+  really inline narration still gets trimmed.
 - **Modes:** `tidy` (the default, which shapes new comments *and* tidies comments
   inside a block being edited, never a drive-by rewrite elsewhere), `new` (only
   newly-written comments, leaving existing ones alone), `off`. Control with

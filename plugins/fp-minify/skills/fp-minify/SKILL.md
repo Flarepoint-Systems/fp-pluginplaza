@@ -2,11 +2,13 @@
 name: fp-minify
 description: >
   Comment-concision mode. Shapes the code the model writes so comments earn their
-  place — a non-obvious why, or meaning a name can't hold (config, units, magic
-  numbers, constraints) — and stay short (a single self-contained line by default); deep backstory
-  goes to the commit message, not the code. API doc comments (JSDoc/TSDoc,
-  docstrings, godoc) are exempt. Sets a prior at the task edge; never steers
-  mid-solve, and only ever touches comments — never the code's behavior. Use
+  place (a non-obvious why, or meaning a name can't hold: config, units, magic
+  numbers, constraints) and stay short. Hard one-line cap on inline comments, and
+  a density bar, so most functions carry none. Measurements, rejected
+  alternatives, and the debugging story go to the commit message, not the code.
+  API doc comments (JSDoc/TSDoc, docstrings, godoc) are exempt. Sets a prior at
+  the task edge, never steers mid-solve, and only ever touches comments, never
+  the code's behavior. Use
   whenever the user says "fp-minify", "fewer comments", "over-commented", "trim the
   comments", or asks for more concise commenting. Modes: off, new, tidy (default).
   Switch by typing "fp-minify new" / "fp-minify tidy" / "fp-minify off". Bulk
@@ -40,24 +42,59 @@ A comment is justified **only when it carries what the code cannot**. Two cases:
   invariants, constraints — where the identifier alone can't tell you what's
   legal or why this number.
 
-When a comment is earned, **default to a single self-contained line**. Expand to
-two or more lines *only* when the code is genuinely tough, or the reasoning or
-use-case truly needs the room — that judgment is yours, but the multi-line block
-is the exception, not the norm. Reach for one line first. The *why* lives in the
-comment; deep backstory (an investigation, a ticket narrative) goes to the
-**commit message**, not a dangling pointer and not the code.
+## One line, hard
+
+An earned comment is **a single self-contained line**. Not "one line by default",
+not "one line unless the reasoning needs room". A cap, with no judgment call to
+negotiate past.
+
+The hardness is the point, so don't soften it back into a default. A rule that
+allows expansion "when the reasoning truly needs the room" never binds, because
+the model writes the comment minutes after working the problem out and always
+believes the room is needed. A subjective ceiling is no ceiling.
+
+When a why won't fit on one line, you have two moves and neither is a paragraph:
+
+1. **Split it.** Anchor a one-liner at each thing it actually explains, rather
+   than one block at the top explaining four of them.
+2. **Cut to what the reader must have**, and send the rest to the commit message.
+
+Multi-line comments happen only when you explicitly ask for one.
+
+## What is not a reason to write more
+
+The most convincing bloat is the investigation you just finished. It feels
+essential because you paid for it, but it is what *you* learned, not what the
+reader needs. None of the following earns extra lines:
+
+- Measurements, sample counts, percentages, timing runs.
+- Alternatives you rejected and the story of how each one failed.
+- What broke last time, or in the other module.
+- The shape of the debugging session that produced the code.
+
+That material is real and worth keeping. It belongs in the **commit message**,
+where it stays findable without sitting on top of the code forever. The comment
+gets the rule. The commit gets the road to it.
+
+## Density
+
+Length is one axis, count is the other. **Most functions need zero comments.** If
+nearly every stanza in a block carries one, they are not earning their place no
+matter how short each one is. A stretch of uncommented code is the normal case,
+not an omission.
 
 ## What gets cut or compressed
 
 - Comments that restate what the code plainly does.
 - Narration of the happy path ("now we loop over the items and return them").
 - A story that belongs in a commit, PR, or ticket rather than the source.
-- An earned-but-bloated comment — kept, but compressed to its essential line.
+- An earned-but-bloated comment, kept but compressed to its essential line.
 
-**Exempt:** API doc comments — JSDoc/TSDoc, Python docstrings, godoc — are
-contracts for callers, not the target; keep them. But a doc-*position* block that
+**Exempt:** API doc comments (JSDoc/TSDoc, Python docstrings, godoc) are
+contracts for callers, not the target. Keep them, in their normal multi-line
+shape. The one-line cap governs inline comments. But a doc-*position* block that
 is really inline narration (a paragraph essay above a function) still gets
-trimmed: sitting in doc position doesn't make prose a contract.
+trimmed, because sitting in doc position doesn't make prose a contract.
 
 ## Modes
 

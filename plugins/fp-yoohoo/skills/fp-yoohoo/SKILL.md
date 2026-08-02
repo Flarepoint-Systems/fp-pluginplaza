@@ -111,3 +111,27 @@ one daemon process (GNOME Terminal is the common case) gives every window the
 same pid, so the wrong window can come forward. And inside tmux or over ssh the
 parent chain never reaches a window at all, which is why the bell and the
 notification exist.
+
+## Why the raise takes about six seconds
+
+This is upstream, not fp-yoohoo, and it is not tunable. Measured on Claude Code
+2.1.220, the whole `notify.js` process takes 53 ms cold: 9 ms to require the
+hooks, 0 ms to walk the parent chain, 6 ms to detect the backend, and 23 ms for
+the KWin load, run and unload over D-Bus.
+
+The delay is a hardcoded gate in Claude Code. The prompt component calls a
+notifier that polls on a 6000 ms interval and only fires once the last keystroke
+is at least 6000 ms old, so the `Notification` hook simply is not dispatched
+before then. The constant carries no settings lookup and no environment
+override, so there is no knob to turn it down.
+
+A faster door does exist. Recent versions expose `PermissionRequest` and
+`Elicitation` hook events that fire when the prompt actually goes up, with no
+idle gate, which would put a raise at roughly 50 ms. fp-yoohoo deliberately does
+not use them. `PermissionRequest` is a blocking hook sitting in the permission
+pipeline, so a wedged compositor would delay the very prompt it was meant to
+announce. The six second gate also does real work as an "is the user actually
+away" heuristic, which `only_when_unfocused` alone does not replicate: it would
+pull someone back from a two second glance at their browser. The current
+behavior is a considered tradeoff, so please do not re-litigate it without a new
+reason.

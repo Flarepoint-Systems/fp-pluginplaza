@@ -18,7 +18,13 @@ unclear, ask which before touching anything.
   contracts.
 - **Cut or shorten** comments that restate what the code plainly does, narrate the
   happy path, or tell a story that belongs in a commit, PR, or ticket. Compress an
-  earned-but-bloated comment to 1–2 self-contained lines.
+  earned-but-bloated comment to one self-contained line, splitting it into
+  separate one-liners at their own anchors if one line can't hold it.
+- **Collapse the multi-line blocks.** Measurements, sample counts, rejected
+  alternatives, and what broke last time are not reasons to keep a paragraph.
+  Keep the rule, drop the road to it.
+- **Thin them out.** Where nearly every stanza carries a comment, most of them
+  aren't earning their place. Count matters as much as length.
 - **Change comments only.** Never alter what the code does.
 
 Before deleting a lot at once, show the user what you'll remove and let them hold

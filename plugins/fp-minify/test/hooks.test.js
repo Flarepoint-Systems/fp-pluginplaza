@@ -29,12 +29,27 @@ test('inject is silent off, framed and substantive on tidy', () => {
   assert.match(tidy, /^<fp:minify mode=tidy>/);
   assert.match(tidy, /keep code comments concise/i);
   assert.match(tidy, /Why, not what/);
-  assert.match(tidy, /Default to a SINGLE self-contained line/);
+  assert.match(tidy, /ONE LINE, HARD/);
+  assert.match(tidy, /SINGLE self-contained line/);
+  assert.match(tidy, /no "the reasoning needs the room" exception/);
+  assert.match(tidy, /DENSITY/);
   assert.match(tidy, /commit message/);
   assert.match(tidy, /JSDoc\/TSDoc, docstrings, godoc/);
   assert.match(tidy, /never changes what the code does/);
   // tidy reaches into edited blocks; new does not
   assert.match(tidy, /already inside any block you edit/);
+});
+
+// The reported bloat came from post-investigation comments, so the doctrine has to
+// name that material rather than leave it to "is this an earned why?".
+test('doctrine disqualifies investigation leftovers in every active mode', () => {
+  for (const mode of ['tidy', 'new']) {
+    const out = inject.buildContext(mode);
+    assert.match(out, /WHAT IS NOT A REASON TO WRITE MORE/);
+    assert.match(out, /measurements, sample counts and percentages/i);
+    assert.match(out, /alternatives you rejected/i);
+    assert.match(out, /Most functions need zero comments/);
+  }
 });
 
 test('new mode shapes only fresh comments and spares existing ones', () => {
