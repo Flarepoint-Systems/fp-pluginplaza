@@ -17,7 +17,7 @@ mid-reason. Install only the ones you want.
 ## Install
 
 ```text
-/plugin marketplace add SlashyIsTaken/fp-pluginplaza
+/plugin marketplace add Flarepoint-Systems/fp-pluginplaza
 /plugin install fp-sicem@flarepoint
 ```
 

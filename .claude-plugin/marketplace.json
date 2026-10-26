@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "flarepoint",
-  "description": "Flarepoint Plugin Plaza: small, single-purpose Claude Code plugins by Flarepoint Systems. Each one fixes one thing the model does that gets in your way, and acts only at the edges of a task, never mid-reason. https://github.com/SlashyIsTaken/fp-pluginplaza",
+  "description": "Flarepoint Plugin Plaza: small, single-purpose Claude Code plugins by Flarepoint Systems. Each one fixes one thing the model does that gets in your way, and acts only at the edges of a task, never mid-reason. https://github.com/Flarepoint-Systems/fp-pluginplaza",
   "owner": {
     "name": "Flarepoint Systems",
     "url": "https://flarepoint.nl"
