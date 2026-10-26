@@ -29,15 +29,14 @@ test('inject is silent off, framed and substantive on tidy', () => {
   assert.match(tidy, /^<fp:minify mode=tidy>/);
   assert.match(tidy, /keep code comments concise/i);
   assert.match(tidy, /Why, not what/);
-  assert.match(tidy, /ONE LINE, HARD/);
-  assert.match(tidy, /SINGLE self-contained line/);
-  assert.match(tidy, /no "the reasoning needs the room" exception/);
-  assert.match(tidy, /DENSITY/);
+  assert.match(tidy, /single self-contained line/);
+  assert.match(tidy, /firm cap, not a default to reason your way past/);
+  assert.match(tidy, /Watch density too/);
   assert.match(tidy, /commit message/);
   assert.match(tidy, /JSDoc\/TSDoc, docstrings, godoc/);
   assert.match(tidy, /never changes what the code does/);
   // tidy reaches into edited blocks; new does not
-  assert.match(tidy, /already inside any block you edit/);
+  assert.match(tidy, /inside any block you edit/);
 });
 
 // The reported bloat came from post-investigation comments, so the doctrine has to
@@ -45,10 +44,10 @@ test('inject is silent off, framed and substantive on tidy', () => {
 test('doctrine disqualifies investigation leftovers in every active mode', () => {
   for (const mode of ['tidy', 'new']) {
     const out = inject.buildContext(mode);
-    assert.match(out, /WHAT IS NOT A REASON TO WRITE MORE/);
-    assert.match(out, /measurements, sample counts and percentages/i);
+    assert.match(out, /The investigation is not the comment/);
+    assert.match(out, /measurements, sample counts/i);
     assert.match(out, /alternatives you rejected/i);
-    assert.match(out, /Most functions need zero comments/);
+    assert.match(out, /Most functions need no comments/);
   }
 });
 
@@ -57,7 +56,7 @@ test('new mode shapes only fresh comments and spares existing ones', () => {
   assert.match(out, /^<fp:minify mode=new>/);
   assert.match(out, /Why, not what/); // same doctrine
   assert.match(out, /leave existing comments as they are/);
-  assert.doesNotMatch(out, /already inside any block you edit/); // the tidy-only clause
+  assert.doesNotMatch(out, /inside any block you edit/); // the tidy-only clause
 });
 
 test('a mode note shows even when off', () => {
@@ -114,4 +113,22 @@ test('statusline segment reflects mode', (t) => {
   assert.equal(seg.label, 'minify');
   assert.equal(seg.value, 'tidy');
   assert.equal(seg.active, true);
+});
+
+test('session start primes the full prior; later prompts get the one-line reminder', (t) => {
+  const prime = require('../hooks/prime');
+  const { primed } = require('../hooks/_fpbase');
+  const sid = `test-${process.pid}-${Date.now()}`;
+  t.after(() => fs.rmSync(primed.file('minify', sid), { force: true }));
+
+  const full = prime.buildPrime('tidy', sid);
+  assert.match(full, /^<fp:minify mode=tidy>/);
+  assert.match(full, /The investigation is not the comment/);
+
+  const short = inject.buildContext('tidy', { sessionId: sid });
+  assert.match(short, /^<fp:minify mode=tidy>/);
+  assert.doesNotMatch(short, /The investigation is not the comment/);
+  assert.ok(short.length * 3 < full.length, 'reminder should be far shorter than the prior');
+
+  assert.equal(prime.buildPrime('off', sid), '');
 });

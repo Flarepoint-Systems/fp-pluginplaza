@@ -27,13 +27,13 @@ test('inject is silent off, framed and substantive on', () => {
 
   const on = inject.buildContext('on');
   assert.match(on, /^<fp:sicem mode=on>/);
-  assert.match(on, /PROSE ARTIFACTS/);
-  assert.match(on, /Default the em-dash out of existence/);
+  assert.match(on, /prose artifacts/);
+  assert.match(on, /Write without em-dashes/);
   assert.match(on, /semicolon/);
   assert.match(on, /without lowering the vocabulary/i);
   // it explicitly spares chat, code, and code comments
-  assert.match(on, /NOT touch your chat replies/);
-  assert.match(on, /comments are fp-minify's job/);
+  assert.match(on, /does not apply to your chat replies/);
+  assert.match(on, /those are fp-minify's job/);
 });
 
 test('a mode note shows even when off', () => {
@@ -85,4 +85,22 @@ test('statusline segment reflects mode', (t) => {
   assert.equal(seg.label, 'sicem');
   assert.equal(seg.value, 'on');
   assert.equal(seg.active, true);
+});
+
+test('session start primes the full prior; later prompts get the one-line reminder', (t) => {
+  const prime = require('../hooks/prime');
+  const { primed } = require('../hooks/_fpbase');
+  const sid = `test-${process.pid}-${Date.now()}`;
+  t.after(() => fs.rmSync(primed.file('sicem', sid), { force: true }));
+
+  const full = prime.buildPrime('on', sid);
+  assert.match(full, /^<fp:sicem mode=on>/);
+  assert.match(full, /Write without em-dashes/);
+
+  const short = inject.buildContext('on', { sessionId: sid });
+  assert.match(short, /^<fp:sicem mode=on>/);
+  assert.doesNotMatch(short, /Write without em-dashes/);
+  assert.ok(short.length * 3 < full.length, 'reminder should be far shorter than the prior');
+
+  assert.equal(prime.buildPrime('off', sid), '');
 });

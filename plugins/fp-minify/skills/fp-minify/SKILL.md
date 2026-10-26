@@ -18,7 +18,7 @@ license: MIT
 
 # fp-minify
 
-Model-written code is often excellent but **over-commented** — inline essays that
+Model-written code is often excellent but **over-commented**, with inline essays that
 restate what the code plainly does, or paragraph-long backstories that belong in a
 commit message. fp-minify sets a prior so comments **earn their place**: it keeps
 the ones that carry real information and cuts or compresses the rest, without ever
@@ -26,7 +26,7 @@ changing what the code does.
 
 ## Persistence
 
-ACTIVE while on. Default: **tidy** — installing the plugin is the opt-in to
+ACTIVE while on. Default: **tidy**, since installing the plugin is the opt-in to
 concise comments. Off via `/fp-minify:mode off` or "stop fp-minify". Switch by
 typing `fp-minify new` / `fp-minify tidy` / `fp-minify off` (the plugin's hook
 applies it instantly, before the model replies).
@@ -36,10 +36,10 @@ applies it instantly, before the model replies).
 A comment is justified **only when it carries what the code cannot**. Two cases:
 
 - **Why, not what.** The reason for something non-obvious, surprising, or
-  deliberately odd — so a later reader doesn't "fix" it back. The code already
+  deliberately odd, so a later reader doesn't "fix" it back. The code already
   says *what* it does; a comment that restates that is noise.
 - **Meaning a name can't hold.** Config values, magic numbers, units, ranges,
-  invariants, constraints — where the identifier alone can't tell you what's
+  invariants, constraints, where the identifier alone can't tell you what's
   legal or why this number.
 
 ## One line, hard
@@ -98,17 +98,17 @@ trimmed, because sitting in doc position doesn't make prose a contract.
 
 ## Modes
 
-- **off** — silent; comment as usual.
-- **new** — govern only the comments the model writes fresh; leave existing
+- **off**: silent. Comment as usual.
+- **new**: govern only the comments the model writes fresh, and leave existing
   comments untouched.
-- **tidy** *(default)* — as `new`, and also tighten over-long or redundant
+- **tidy** *(default)*: as `new`, and also tighten over-long or redundant
   comments **already inside a block the model is editing**. It never touches
-  comments in code it isn't otherwise changing — no drive-by rewrites.
+  comments in code it isn't otherwise changing, so there are no drive-by rewrites.
 
-## Bulk stripping — `/fp-minify:strip`
+## Bulk stripping with `/fp-minify:strip`
 
 The modes above are the always-on prior. When you want a **deliberate cleanup
-pass**, run `/fp-minify:strip [target]` — it walks the target (a file, a dir, or
+pass**, run `/fp-minify:strip [target]`. It walks the target (a file, a dir, or
 the current focus) and removes or compresses unearned comments by the same rules.
 Because it's a bulk edit, it shows you what it will remove before deleting a lot
 at once, and shortens rather than drops when a comment's value is unclear.
@@ -117,7 +117,7 @@ at once, and shortens rather than drops when a comment's value is unclear.
 
 - **Not a gate.** It doesn't block edits or commits. It sets a prior; the model
   honors it.
-- **Not a code rewriter.** It changes **comments only** — never behavior — and
+- **Not a code rewriter.** It changes **comments only**, never behavior, and
   never removes a comment that carries real information. Unsure a comment is
   earned? Shorten it, don't delete it.
 - **Not mid-solve steering.** It fires once, at the task edge, like the rest of

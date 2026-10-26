@@ -28,12 +28,12 @@ test('inject is silent off, framed in full and footer', () => {
 
   const full = inject.buildContext('full');
   assert.match(full, /^<fp:honesty mode=full>/);
-  assert.match(full, /inline tag/);
-  assert.match(full, /NON-INTERFERENCE/);
+  assert.match(full, /right after each claim/);
+  assert.match(full, /Non-interference/);
   assert.match(full, /basis: 🟢 N verified/);
 
   const footer = inject.buildContext('footer');
-  assert.match(footer, /Do NOT add inline tags/);
+  assert.match(footer, /Don't put tags inline/);
 });
 
 test('inject appends a backstop disclosure when present', () => {
@@ -125,4 +125,22 @@ test('statusline segment reflects mode', (t) => {
   assert.equal(seg.label, 'honesty');
   assert.equal(seg.value, 'full');
   assert.equal(seg.active, true);
+});
+
+test('session start primes the full prior; later prompts get the one-line reminder', (t) => {
+  const prime = require('../hooks/prime');
+  const { primed } = require('../hooks/_fpbase');
+  const sid = `test-${process.pid}-${Date.now()}`;
+  t.after(() => fs.rmSync(primed.file('honesty', sid), { force: true }));
+
+  const full = prime.buildPrime('full', sid);
+  assert.match(full, /^<fp:honesty mode=full>/);
+  assert.match(full, /Non-interference/);
+
+  const short = inject.buildContext('full', { sessionId: sid });
+  assert.match(short, /^<fp:honesty mode=full>/);
+  assert.doesNotMatch(short, /Non-interference/);
+  assert.ok(short.length * 3 < full.length, 'reminder should be far shorter than the prior');
+
+  assert.equal(prime.buildPrime('off', sid), '');
 });

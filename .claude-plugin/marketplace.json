@@ -1,40 +1,40 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "flarepoint",
-  "description": "Flarepoint Plugin Plaza (fp) — a plaza of small, behavioural Claude Code plugins that surface the AI's state or shape how it approaches a task, intervening only at the edges, never steering it mid-reason. Built on one shared substrate (fp-base). https://github.com/SlashyIsTaken/fp-pluginplaza",
+  "description": "Flarepoint Plugin Plaza: small, single-purpose Claude Code plugins by Flarepoint Systems. Each one fixes one thing the model does that gets in your way, and acts only at the edges of a task, never mid-reason. https://github.com/SlashyIsTaken/fp-pluginplaza",
   "owner": {
-    "name": "Flarepoint",
-    "url": "https://github.com/SlashyIsTaken"
+    "name": "Flarepoint Systems",
+    "url": "https://flarepoint.nl"
   },
   "plugins": [
     {
       "name": "fp-honesty",
       "source": "./plugins/fp-honesty",
-      "description": "Annotate load-bearing claims with their epistemic basis (verified/inferred/recalled/guess) and a per-response footer tally. Pure annotation — never changes what the model does.",
+      "description": "Tags each load-bearing claim with its basis (🟢 verified, 🟡 inferred, 🟠 recalled, 🔴 guess) and ends the response with a one-line tally. A backstop hook checks verified tags against the tools actually used. Pure annotation, it never changes what the model does. Modes: off, footer, full (default).",
       "category": "productivity"
     },
     {
       "name": "fp-barbeque",
       "source": "./plugins/fp-barbeque",
-      "description": "Understanding-first mode. On exploratory tasks (refactors, design, ambiguous scope) the model grills you toward mutual understanding before writing code, so you can debug and own the result. Sets a prior at the task edge and skips trivial work; never steers mid-solve. Modes: off, on (default).",
+      "description": "Understanding-first mode. On exploratory tasks (refactors, design decisions, fuzzy scope) the model reads the code, then settles the real forks with you through the option-dialog before it writes anything, so you can debug and own the result. Trivial and fully specified work is built straight away. Modes: off, on (default).",
       "category": "productivity"
     },
     {
       "name": "fp-minify",
       "source": "./plugins/fp-minify",
-      "description": "Comment-concision mode. Shapes the code the model writes so comments earn their place — a non-obvious why, or meaning a name can't hold (config, units, constraints) — and stay short; deep backstory goes to the commit. API docstrings are exempt. Sets a prior at the task edge; only ever touches comments, never behavior. Modes: off, new, tidy (default). Plus /fp-minify:strip for deliberate bulk de-commenting.",
+      "description": "Comment-concision mode. Comments must earn their place (a non-obvious why, or meaning a name can't hold) and stay to one line, so most functions carry none. Investigation details go to the commit message. Docstrings are exempt, and it never changes what the code does. Modes: off, new, tidy (default), plus /fp-minify:strip for a deliberate cleanup pass.",
       "category": "productivity"
     },
     {
       "name": "fp-sicem",
       "source": "./plugins/fp-sicem",
-      "description": "Readable-prose mode (\"sic 'em-dash\"). In the prose the model writes (READMEs, docs, markdown, PR and commit bodies) it defaults the em-dash out of existence, replacing it and its cousins (semicolon, colon-as-drama, long dash-parentheticals) with clear connectors that read well for every English reader, non-native ones included. Clearer and cleaner, never dumbed down. Prose artifacts only; not chat, not code, not code comments (fp-minify's turf). Sets a prior at the task edge; never steers mid-solve. Modes: off, on (default).",
+      "description": "Readable-prose mode (\"sic 'em-dash\"). In the prose the model writes (READMEs, docs, markdown, PR and commit bodies) it replaces the em-dash and its cousins with connectors every English reader can follow at speed, non-native readers included. Clearer, never dumbed down. Chat, code and comments are left alone. Modes: off, on (default).",
       "category": "productivity"
     },
     {
       "name": "fp-yoohoo",
       "source": "./plugins/fp-yoohoo",
-      "description": "Terminal-recall mode. When Claude Code stops to ask you something (a permission prompt, a question dialog, an agent blocked on input) it brings the terminal window to the foreground, so a waiting session is impossible to miss. Skips the raise when the terminal already has focus. Raises windows on KDE, Hyprland, sway, X11, macOS and Windows, with a bell and desktop notification where no window can be reached. Pure mechanism. It never touches what the model says or does. Modes: off, hint, on (default).",
+      "description": "Terminal-recall mode. When Claude Code stops to ask you something (a permission prompt, a question dialog, an agent blocked on input) it brings the terminal window to the front, unless it already has focus. Works on KDE, Hyprland, sway, X11, macOS and Windows, with a bell and desktop notification where no window can be raised. Pure mechanism. Modes: off, hint, on (default).",
       "category": "productivity"
     }
   ]

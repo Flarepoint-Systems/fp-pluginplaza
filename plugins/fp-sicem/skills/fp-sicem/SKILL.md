@@ -17,7 +17,7 @@ description: >
 license: MIT
 ---
 
-# fp-sicem — sic 'em-dash
+# fp-sicem (sic 'em-dash)
 
 You write excellent English. That is the problem this fixes. The em-dash, used
 well, is a great mark, but it is a mark many capable readers (especially

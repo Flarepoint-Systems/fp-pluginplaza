@@ -1,9 +1,9 @@
 {
   "name": "fp-barbeque",
-  "description": "Understanding-first mode: on exploratory tasks (refactors, design, ambiguous scope) the model grills you toward mutual understanding before it writes code, so you can debug and own the result. Sets a prior at the task edge; never steers mid-solve. Modes: off, on (default).",
-  "version": "0.1.0",
+  "description": "Understanding-first mode. On exploratory tasks (refactors, design decisions, fuzzy scope) the model reads the code, then settles the real forks with you through the option-dialog before it writes anything, so you can debug and own the result. Trivial and fully specified work is built straight away. Modes: off, on (default).",
+  "version": "0.2.0",
   "author": {
-    "name": "Flarepoint",
-    "url": "https://github.com/SlashyIsTaken"
+    "name": "Flarepoint Systems",
+    "url": "https://flarepoint.nl"
   }
 }

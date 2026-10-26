@@ -1,9 +1,9 @@
 'use strict';
 
-// Shared setup for every fp-honesty hook: load the (vendored or dev) base,
-// declare the mode levels once, and hold the compact always-on ruleset that the
-// inject hook pushes each turn. The detailed authoritative version lives in
-// skills/fp-honesty/SKILL.md; this is the terse enforcement copy.
+// Shared setup for every fp-honesty hook: load the base, declare the mode levels,
+// and hold the two texts the hooks inject. RULES is the full prior, sent at
+// session start and whenever the mode changes. REMINDERS is the one-line nudge
+// sent on every other prompt. skills/fp-honesty/SKILL.md is the expanded version.
 
 const os = require('os');
 const path = require('path');
@@ -32,18 +32,27 @@ function flagFile(start) {
 
 base.mode.define(PLUGIN, { levels: ['footer', 'full'], default: 'full' });
 
-const COMMON = `Tag the BASIS of every load-bearing factual claim — an assertion that costs the user if it is wrong: claims about this codebase, how an API/library behaves, version numbers or limits, "X is unused/safe/already handled", or facts about the outside world.
-Levels (use the exact colored tag, including the emoji and the word): [🟢 verified] you confirmed it with a tool THIS turn (not a past turn, not "I'm fairly sure"); [🟡 inferred] your reasoning, unchecked; [🟠 recalled] training knowledge, may be stale; [🔴 guess] a hunch.
-Do NOT tag opinions, plans, questions, or code you are writing (code is the artifact, not a claim). Keep ordinary prose clean.
-NON-INTERFERENCE (critical): the tag changes NOTHING you do — never add caveats, fallbacks, extra caution, or hedging because a claim is only inferred. Surface status; never steer.`;
+const COMMON = `Tag the basis of each load-bearing factual claim, meaning a claim that would cost the user if it were wrong: facts about this codebase, how an API or library behaves, versions and limits, "X is unused, safe or already handled", or facts about the outside world.
+Use these exact tags, emoji included:
+- [🟢 verified] you confirmed it with a tool in this turn. A check from an earlier turn, or being fairly sure, does not count.
+- [🟡 inferred] your own reasoning, unchecked.
+- [🟠 recalled] training knowledge, which may be stale.
+- [🔴 guess] a hunch.
+Leave opinions, plans, questions and the code you write untagged (code is the artifact, not a claim), and keep ordinary prose clean.
+Non-interference: the tags only report. They never change what you do, so don't add caveats, fallbacks, hedging or extra caution because a claim is only inferred.`;
 
 const RULES = {
-  full: `fp-honesty (full). Active this response.
+  full: `fp-honesty (full) is on for this response.
 ${COMMON}
-Put a colored inline tag right after each load-bearing claim, then end the response with one footer line: "basis: 🟢 N verified · 🟡 M inferred · …" (only the levels you used, each with its emoji). No load-bearing claims → no footer.`,
-  footer: `fp-honesty (footer). Active this response.
+Put the tag right after each claim it applies to, then end the response with one footer line: "basis: 🟢 N verified · 🟡 M inferred · …", listing only the levels you used, each with its emoji. A response with no load-bearing claims gets no footer.`,
+  footer: `fp-honesty (footer) is on for this response.
 ${COMMON}
-Do NOT add inline tags. Instead, end the response with one footer line tallying the basis of the load-bearing claims you made: "basis: 🟢 N verified · 🟡 M inferred · …" (each level with its emoji). No load-bearing claims → no footer.`,
+Don't put tags inline. Instead, end the response with one footer line that tallies the basis of the load-bearing claims you made: "basis: 🟢 N verified · 🟡 M inferred · …", each level with its emoji. A response with no load-bearing claims gets no footer.`,
 };
 
-module.exports = { base, PLUGIN, RULES, loadBase, flagFile };
+const REMINDERS = {
+  full: `fp-honesty (full) is on. Tag each load-bearing claim inline with [🟢 verified] (tool-checked this turn), [🟡 inferred], [🟠 recalled] or [🔴 guess], and end with the "basis:" footer. The tags never change what you do.`,
+  footer: `fp-honesty (footer) is on. No inline tags. End with the "basis:" footer tallying your load-bearing claims by level. The tags never change what you do.`,
+};
+
+module.exports = { base, PLUGIN, RULES, REMINDERS, loadBase, flagFile };

@@ -1,9 +1,9 @@
 {
   "name": "fp-yoohoo",
-  "description": "Terminal-recall mode. When Claude Code stops to ask you something (a permission prompt, a question dialog, an agent blocked on input) it brings the terminal window to the foreground, so a waiting session is impossible to miss and you never have to remember to check back. Skips the raise when the terminal already has focus. Raises windows on KDE, Hyprland, sway, X11, macOS and Windows, with a bell and desktop notification where no window can be reached. Pure mechanism. It never touches what the model says or does. Modes: off, hint, on (default).",
-  "version": "0.1.0",
+  "description": "Terminal-recall mode. When Claude Code stops to ask you something (a permission prompt, a question dialog, an agent blocked on input) it brings the terminal window to the front, unless it already has focus. Works on KDE, Hyprland, sway, X11, macOS and Windows, with a bell and desktop notification where no window can be raised. Pure mechanism. Modes: off, hint, on (default).",
+  "version": "0.1.1",
   "author": {
-    "name": "Flarepoint",
-    "url": "https://github.com/SlashyIsTaken"
+    "name": "Flarepoint Systems",
+    "url": "https://flarepoint.nl"
   }
 }

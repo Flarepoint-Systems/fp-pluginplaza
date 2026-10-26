@@ -13,7 +13,7 @@ description: >
 license: MIT
 ---
 
-# fp-yoohoo — the terminal comes to you
+# fp-yoohoo: the terminal comes to you
 
 fp-yoohoo is the only plugin in the plaza that changes nothing about how you
 think or write. It injects no prior, reads no transcript, and tags no claims. It

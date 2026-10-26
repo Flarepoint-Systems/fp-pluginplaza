@@ -8,6 +8,6 @@
     "node": ">=18"
   },
   "scripts": {
-    "test": "node --test \"shared/fpbase/test/*.test.js\" \"plugins/*/test/*.test.js\""
+    "test": "node --test \"test/*.test.js\" \"shared/fpbase/test/*.test.js\" \"plugins/*/test/*.test.js\""
   }
 }

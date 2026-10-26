@@ -25,17 +25,15 @@ test('audit caps an ungrounded "verified" down to inferred', () => {
 test('inject is silent when off or empty, framed otherwise', () => {
   assert.equal(inject.build('honesty', { mode: 'off', rules: 'x' }), '');
   assert.equal(inject.build('honesty', { mode: 'full' }), '');
-  const out = inject.build('memory', {
-    mode: 'on',
+  const out = inject.build('honesty', {
+    mode: 'full',
     rules: 'Be honest.',
-    recall: [{ body: 'uses tabs', provenance: 'verified' }],
-    suggestion: { line: 'I noticed: prefers fetch — keep it?' },
+    suggestion: { line: 'backstop: re-check config.js' },
   });
-  assert.match(out, /^<fp:memory mode=on>/);
+  assert.match(out, /^<fp:honesty mode=full>/);
   assert.match(out, /Be honest\./);
-  assert.match(out, /uses tabs \(verified\)/);
-  assert.match(out, /prefers fetch/);
-  assert.match(out, /<\/fp:memory>$/);
+  assert.match(out, /re-check config\.js/);
+  assert.match(out, /<\/fp:honesty>$/);
 });
 
 test('statusline is opt-in and shows only active segments', () => {

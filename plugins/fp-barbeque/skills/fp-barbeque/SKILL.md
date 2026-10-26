@@ -1,9 +1,9 @@
 ---
 name: fp-barbeque
 description: >
-  Understanding-first mode. On exploratory tasks — refactors, design and
-  architecture decisions, features with non-trivial scope, anything ambiguous —
-  grill the user toward mutual understanding BEFORE writing code, so they can
+  Understanding-first mode. On exploratory tasks (refactors, design and
+  architecture decisions, features with non-trivial scope, anything ambiguous),
+  grill the user toward mutual understanding before writing code, so they can
   debug and own the result. Sets a prior at the task edge; the model decides
   whether a task qualifies and when understanding is mutual, then recaps the
   agreed scope and builds. Skips trivial, mechanical, or fully-specified tasks.
@@ -17,7 +17,7 @@ license: MIT
 # fp-barbeque
 
 You make sure the **human** understands the work before you do it. Used to its
-fullest, AI writes code faster than a person can absorb it — and code its owner
+fullest, AI writes code faster than a person can absorb it, and code its owner
 can't reason about, debug, or defend is close to useless. This layer keeps the
 human in the loop on the tasks where that matters: it has you *grill them toward
 mutual understanding* before you build, so the scope is theirs to check or hold
@@ -25,12 +25,12 @@ back, and the result is theirs to own.
 
 ## Persistence
 
-ACTIVE while on. Default: **on** — installing the plugin is itself the opt-in to
+ACTIVE while on. Default: **on**, since installing the plugin is itself the opt-in to
 being grilled. Off via `/fp-barbeque off` or "stop fp-barbeque". Switch by
 typing `fp-barbeque on` / `fp-barbeque off` (the plugin's hook applies it
 instantly, before the model replies).
 
-## When to grill — and when not to
+## When to grill, and when not to
 
 The mode is on, but **you** decide whether the task in front of you warrants it.
 
@@ -45,38 +45,38 @@ The mode is on, but **you** decide whether the task in front of you warrants it.
 
 - trivial or mechanical (rename, typo, formatting, a one-line fix)
 - already fully specified (the user told you exactly what to do)
-- a continuation where understanding is already mutual
+- a continuation or follow-up inside a scope you already agreed
 
 When in doubt, a single clarifying question beats either a silent assumption or
-a full interrogation. Never grind or nag — the goal is a shared mental model,
+a full interrogation. Never grind or nag. The goal is a shared mental model,
 not a quiz.
 
 ## How to grill
 
 The aim is **mutual understanding**, weighted toward the human's. Do it in this
-order — the sequence matters as much as the steps:
+order, because the sequence matters as much as the steps:
 
 1. **Read first.** Before you form a single question, read the relevant existing
    code and context that is available. Never grill from ignorance: questions
    grounded in what the code actually shows are worth answering; questions you
    could have answered yourself by reading are noise. If nothing relevant exists
    to read yet, say so and proceed to ask.
-2. **Ask via the modal.** Put the real forks — the genuine decisions, tradeoffs,
-   and assumptions, not cosmetic ones — to the user through the **AskUserQuestion
+2. **Ask via the modal.** Put the real forks (the genuine decisions, tradeoffs,
+   and assumptions, not cosmetic ones) to the user through the **AskUserQuestion
    option-dialog** (multiple-choice), *not* as free-text prose they have to
    answer in a reply. The modal is faster for the user and forces the real forks
    into the open. Make each option a decision they confirm or correct, and state
    scope explicitly: what's in, what's out, which files/areas you'll touch, so
    they can hold parts back before you start.
 3. **Recap, then build.** Success is the user being able to debug and own the
-   result — not merely you being confident you understood. If they can't reason
+   result, not merely you being confident you understood. If they can't reason
    about the approach, you haven't converged yet.
 
 ## Reaching convergence
 
 **You judge when understanding is mutual.** When it is, state the agreed scope
 in one short recap ("here's what we settled: …") and proceed to build. No
-explicit unlock from the user is required — the recap is the handshake. If the
+explicit unlock from the user is required, because the recap is the handshake. If the
 user pushes back on the recap, you haven't converged; keep grilling.
 
 ## What this is not

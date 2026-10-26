@@ -57,7 +57,7 @@ function run() {
     const refs = [...new Set(ungrounded.flatMap((c) => c.refs))].slice(0, 5);
     const subject = refs.length ? ` on ${refs.map((r) => `\`${r}\``).join(', ')}` : '';
     const disclosure =
-      `fp-honesty backstop: your last response tagged [🟢 verified]${subject} but no tool call this turn grounded it — treat as [🟡 inferred] going forward, or re-check before re-asserting.`;
+      `fp-honesty backstop: your last response tagged [🟢 verified]${subject}, but no tool call in that turn grounded it. Treat it as [🟡 inferred] from here on, or re-check it before you assert it again.`;
     base.util.atomicWrite(file, `${JSON.stringify({ disclosure, at: new Date().toISOString() }, null, 2)}\n`);
   } catch {
     // A backstop must never break the session.

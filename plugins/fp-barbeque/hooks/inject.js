@@ -1,17 +1,13 @@
 'use strict';
 
-// UserPromptSubmit hook. Two jobs each turn:
-//   1. If the prompt is a mode directive ("fp-barbeque off", "stop fp-barbeque",
-//      etc.), flip the saved mode right here, deterministically, before the
-//      model does anything — so switching is instant and reliable, with no tool
-//      call. (Same approach as fp-honesty.)
-//   2. While on, inject the understanding-first prior so the model knows to
-//      grill before building on exploratory tasks.
-// Output goes to stdout, which Claude Code adds to the prompt context. Silent
-// when off (the prior carries no rules) so an inactive plugin stays quiet.
+// UserPromptSubmit hook. Two jobs each prompt:
+//   1. If the prompt is a mode directive ("fp-barbeque off", "stop fp-barbeque"), flip the
+//      saved mode here, before the model replies, so switching needs no tool call.
+//   2. Inject the prior: the full text if this session hasn't been primed at the
+//      current mode yet (see prime.js), otherwise the one-line reminder.
+// Output goes to stdout, which Claude Code adds to the prompt context.
 
-const { base, PLUGIN, RULES } = require('./barbeque');
-const fs = require('fs');
+const { base, PLUGIN, RULES, REMINDERS } = require('./barbeque');
 
 // Matches an explicit directive at the START of the prompt, so a passing mention
 // of "fp-barbeque" mid-sentence never flips the mode. The "/", "@" or "$" prefix
@@ -25,18 +21,10 @@ function detectDirective(prompt) {
   return null;
 }
 
-function readPrompt() {
-  try {
-    const raw = fs.readFileSync(0, 'utf8').replace(/^﻿/, ''); // strip BOM some shells add
-    return JSON.parse(raw).prompt || '';
-  } catch {
-    return '';
-  }
-}
-
-// Pure builder so tests don't touch stdin/stdout.
-function buildContext(mode, { note = null } = {}) {
-  return base.inject.build(PLUGIN, { mode, rules: RULES[mode] || '', note });
+// Pure apart from the primed marker, so tests don't touch stdin/stdout.
+function buildContext(mode, { note = null, sessionId = '' } = {}) {
+  const rules = base.primed.pick(PLUGIN, sessionId, mode, { full: RULES[mode], reminder: REMINDERS[mode] });
+  return base.inject.build(PLUGIN, { mode, rules, note });
 }
 
 // Apply a directive and return a one-line note for the model, or null.
@@ -51,9 +39,10 @@ function applyDirective(directive) {
 
 function run() {
   try {
-    const note = applyDirective(detectDirective(readPrompt()));
+    const input = base.util.readHookInput();
+    const note = applyDirective(detectDirective(input.prompt));
     const mode = base.mode.get(PLUGIN);
-    const out = buildContext(mode, { note });
+    const out = buildContext(mode, { note, sessionId: input.session_id });
     if (out) process.stdout.write(out);
   } catch {
     // Injection is best-effort; never block a prompt.

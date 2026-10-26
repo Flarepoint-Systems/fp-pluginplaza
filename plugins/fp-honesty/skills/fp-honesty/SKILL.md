@@ -1,7 +1,7 @@
 ---
 name: fp-honesty
 description: >
-  Surfaces the epistemic basis of load-bearing claims — tags each with
+  Surfaces the epistemic basis of load-bearing claims. It tags each with
   verified / inferred / recalled / guess and ends with a one-line basis tally.
   Pure annotation: it never changes what you decide or do. Active every response
   while on. Use whenever the user says "fp-honesty", "honesty mode", "show your
@@ -25,7 +25,7 @@ ACTIVE EVERY RESPONSE while on. Default: **full**. Off only via `/fp-honesty off
 or "stop fp-honesty". Switch by typing `fp-honesty off` / `fp-honesty footer` /
 `fp-honesty full` (the plugin's hook applies it instantly).
 
-## What to tag — load-bearing claims only
+## What to tag: load-bearing claims only
 
 A **load-bearing claim** is a factual assertion that costs the user if it's
 wrong:
@@ -37,9 +37,9 @@ wrong:
 - facts about the outside world
 
 Do **not** tag: your opinions, plans, or suggestions; questions back to the
-user; or **code you are writing** — the code is the artifact, not a claim about
-the world. Keep ordinary prose clean. If everything is tagged, nothing stands
-out — tag only what's load-bearing.
+user; or **code you are writing** (the code is the artifact, not a claim about
+the world). Keep ordinary prose clean. If everything is tagged, nothing stands
+out, so tag only what's load-bearing.
 
 ## The four levels
 
@@ -55,13 +55,13 @@ relying on color (for colorblind readers and screen readers).
 
 The discipline that matters: **never claim `verified` for confidence you didn't
 earn this turn.** Reading a file two turns ago, or "I'm quite sure," is not
-verified — it's `inferred` or `recalled`. A backstop hook checks `verified` tags
+verified. It's `inferred` or `recalled`. A backstop hook checks `verified` tags
 against your actual tool calls and will flag any that weren't grounded.
 
 ## Format
 
 - **full** (default): a colored inline tag right after each load-bearing claim,
-  e.g. *"`config.js` reads env first [🟢 verified]"* — then end the response with
+  e.g. *"`config.js` reads env first [🟢 verified]"*. Then end the response with
   one footer line: `basis: 🟢 2 verified · 🟡 1 inferred`.
 - **footer**: no inline tags; just the closing `basis:` tally of the load-bearing
   claims you made, e.g. `basis: 🟢 2 verified · 🔴 1 guess`.
@@ -77,21 +77,21 @@ The tag **changes nothing about what you do.** You do not:
 - become more cautious, ask more questions, or pad the answer because something is `recalled`
 - avoid making a claim just to dodge a tag
 
-You write exactly what you'd write without this skill — and then mark the basis.
+You write exactly what you'd write without this skill, and then mark the basis.
 Surfacing status is the whole job; steering behavior because of it is a
 different skill (and not this one). If you catch yourself softening an answer
 *because* of a tag, stop: that's the failure mode this layer exists to avoid.
 
 ## Examples
 
-> The rate limiter uses a fixed window [🟡 inferred] — I'd confirm by reading
+> The rate limiter uses a fixed window [🟡 inferred]. I'd confirm by reading
 > `limiter.py`. Redis is the backing store [🟢 verified]. The default TTL is 60s
 > [🟠 recalled].
 >
 > basis: 🟢 1 verified · 🟡 1 inferred · 🟠 1 recalled
 
 Note what did *not* happen: the `inferred` claim got no extra hedging or
-defensive code — just an honest tag and an offer the user can take or leave.
+defensive code, just an honest tag and an offer the user can take or leave.
 
 ## Boundaries
 

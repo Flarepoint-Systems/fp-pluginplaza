@@ -27,11 +27,12 @@ test('inject is silent off, framed and substantive on', () => {
 
   const on = inject.buildContext('on');
   assert.match(on, /^<fp:barbeque mode=on>/);
-  assert.match(on, /Understanding-first mode/);
-  assert.match(on, /do NOT start implementing yet/);
+  assert.match(on, /understanding-first mode/);
+  assert.match(on, /build a shared understanding with the user first/);
   assert.match(on, /option-dialog/);
   assert.match(on, /debug and own the result/);
   assert.match(on, /just build/); // the skip-trivial escape hatch survives
+  assert.match(on, /follow-ups inside a scope you already agreed/);
 });
 
 test('a mode note shows even when off', () => {
@@ -83,4 +84,22 @@ test('statusline segment reflects mode', (t) => {
   assert.equal(seg.label, 'barbeque');
   assert.equal(seg.value, 'on');
   assert.equal(seg.active, true);
+});
+
+test('session start primes the full prior; later prompts get the one-line reminder', (t) => {
+  const prime = require('../hooks/prime');
+  const { primed } = require('../hooks/_fpbase');
+  const sid = `test-${process.pid}-${Date.now()}`;
+  t.after(() => fs.rmSync(primed.file('barbeque', sid), { force: true }));
+
+  const full = prime.buildPrime('on', sid);
+  assert.match(full, /^<fp:barbeque mode=on>/);
+  assert.match(full, /understanding-first/);
+
+  const short = inject.buildContext('on', { sessionId: sid });
+  assert.match(short, /^<fp:barbeque mode=on>/);
+  assert.doesNotMatch(short, /understanding-first/);
+  assert.ok(short.length * 3 < full.length, 'reminder should be far shorter than the prior');
+
+  assert.equal(prime.buildPrime('off', sid), '');
 });

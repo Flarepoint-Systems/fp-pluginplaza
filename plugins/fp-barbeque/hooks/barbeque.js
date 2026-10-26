@@ -1,15 +1,9 @@
 'use strict';
 
-// Shared setup for every fp-barbeque hook: load the (vendored or dev) base,
-// declare the mode levels once, and hold the prior that the inject hook pushes
-// at the start of each turn while on. The authoritative, expanded version lives
-// in skills/fp-barbeque/SKILL.md; this is the terse injected copy.
-//
-// fp-barbeque is the plaza's first *influential* plugin: where fp-honesty's
-// prior only annotates, this one shapes behavior — but its whole footprint is a
-// single inject at the task edge (a pre-task prior the house rules allow), never
-// a mid-solve interjection. The model executes the prior; the plugin does not
-// watch or steer the conversation after dropping it.
+// Shared setup for every fp-barbeque hook: load the base, declare the mode levels,
+// and hold the two texts the hooks inject. RULES is the full prior, sent at
+// session start and whenever the mode changes. REMINDERS is the one-line nudge
+// sent on every other prompt. skills/fp-barbeque/SKILL.md is the expanded version.
 
 function loadBase() {
   try {
@@ -25,12 +19,16 @@ const PLUGIN = 'barbeque';
 base.mode.define(PLUGIN, { levels: ['on'], default: 'on' });
 
 const RULES = {
-  on: `Understanding-first mode (fp-barbeque) is on. Active at the start of this task.
-If this task is exploratory — a refactor, a design or architecture decision, a feature with non-trivial scope, or anything ambiguous — do NOT start implementing yet. Grill the user toward mutual understanding, in this order:
-1. READ FIRST. Before forming any question, read the relevant existing code and context that is available. Never grill from ignorance — your questions must be grounded in what the code actually shows, not guesses about it.
-2. ASK VIA THE MODAL. Put the real forks, tradeoffs, and assumptions to the user through the AskUserQuestion option-dialog (multiple-choice) — NOT as free-text prose the user has to answer in a reply. Make each a decision the user confirms or corrects. Define scope explicitly: what's in, what's out, which files/areas you'll touch, so the user can hold parts back.
-3. RECAP, THEN BUILD. Aim for the user to understand the approach well enough to debug and own the result — not just for you to feel confident. When understanding is mutual, state the agreed scope in one short recap and proceed.
-If the task is trivial, mechanical, or already fully specified, skip all of this and just build. Never grind or nag — converge efficiently, then get out of the way.`,
+  on: `fp-barbeque is on: understanding-first mode.
+Before you implement an exploratory task (a refactor, a design or architecture decision, a feature with fuzzy scope, or anything with more than one reasonable approach), build a shared understanding with the user first. The goal is that they can debug and own the result, not only that you feel confident.
+1. Read first. Look at the relevant code and context before you ask anything, so every question is grounded in what is actually there. Don't ask what you could find out by reading.
+2. Ask through the AskUserQuestion option-dialog rather than open questions in prose. Offer the real forks, tradeoffs and assumptions as choices the user can confirm or correct. State the scope: what is in, what is out, and which files or areas you will touch.
+3. Recap, then build. When understanding is mutual, state the agreed scope in one short recap and proceed. If the user pushes back on the recap, keep talking.
+Skip all of this for trivial, mechanical or fully specified work, and for follow-ups inside a scope you already agreed. In those cases, just build. Keep it brief: one round of questions is usually enough.`,
 };
 
-module.exports = { base, PLUGIN, RULES, loadBase };
+const REMINDERS = {
+  on: `fp-barbeque is on. For a new exploratory task: read first, settle the real forks through the option-dialog, recap, then build. Trivial, fully specified or already-agreed work: just build.`,
+};
+
+module.exports = { base, PLUGIN, RULES, REMINDERS, loadBase };

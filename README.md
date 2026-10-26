@@ -26,7 +26,7 @@ stay quiet instead of erroring.
 
 ## See it
 
-**fp-barbeque** — one focused question at the task edge, instead of building the
+**fp-barbeque**: one focused question at the task edge, instead of building the
 wrong thing fast:
 
 ```text
@@ -36,10 +36,10 @@ you › add caching to the API layer
 
   with     →  "Before I build: in-memory per-process, or shared across
               instances? And cache the HTTP responses or the DB queries?
-              Those have different blast radii — which did you mean?"
+              Those have different blast radii. Which did you mean?"
 ```
 
-**fp-honesty** — each claim carries its basis, with a tally to close:
+**fp-honesty**: each claim carries its basis, with a tally to close:
 
 ```text
 Config loads from ~/.config 🟢, falls back to env vars 🟡, and the request
@@ -48,7 +48,7 @@ timeout defaults to 30s 🔴.
 basis: 🟢 verified 1 · 🟡 inferred 1 · 🔴 guess 1
 ```
 
-**fp-sicem** — the em-dash and its cousins rewritten into marks you don't
+**fp-sicem**: the em-dash and its cousins rewritten into marks you don't
 re-parse, across ordinary sentences:
 
 ```diff
@@ -58,7 +58,7 @@ re-parse, across ordinary sentences:
 + every 60s. Stale reads are effectively impossible.
 ```
 
-**fp-minify** — a comment must earn its place: the essay collapses to the one
+**fp-minify**: a comment must earn its place: the essay collapses to the one
 *why* that matters, and the comment that just narrates the code goes:
 
 ```diff
@@ -84,7 +84,7 @@ re-parse, across ordinary sentences:
 
 ## The plugins
 
-### fp-barbeque — get grilled toward mutual understanding before code is written
+### fp-barbeque: get grilled toward mutual understanding before code is written
 
 Used to its fullest, AI writes code faster than you can absorb it, and code you
 can't reason about, debug, or defend is close to useless.
@@ -103,13 +103,13 @@ the result is yours to own.
 - **The model judges convergence.** When understanding is mutual it recaps the
   agreed scope in one line and proceeds. The recap is the handshake. Push back on
   it and it keeps grilling.
-- **An edge prior, not a gate.** Its whole footprint is one prior set at the
-  start of a task. It never blocks a tool, never interjects mid-solve, never
-  watches the conversation after.
+- **An edge prior, not a gate.** Its whole footprint is a prior set at the
+  start of a session, plus a one-line reminder with each prompt. It never blocks
+  a tool, never interjects mid-solve, and never watches the conversation after.
 - **Modes:** `on` (grill first, the default, since installing it is the opt-in),
   `off` (build straight away). Control with `/fp-barbeque:mode`.
   
-### fp-honesty — see how much of an answer is grounded vs. guessed
+### fp-honesty: see how much of an answer is grounded vs. guessed
 
 Models state guesses and facts in the same confident tone.
 [fp-honesty](./plugins/fp-honesty) tags every load-bearing claim with its basis,
@@ -125,7 +125,7 @@ so you can tell at a glance how much of an answer is actually grounded.
 - **Modes:** `full` (inline tags and a tally), `footer` (tally only), `off`.
   Control with `/fp-honesty:mode`.
 
-### fp-sicem — prose that reads clearly for everyone, em-dash first on the block
+### fp-sicem: prose that reads clearly for everyone, em-dash first on the block
 
 The model writes excellent English, and that is exactly the problem. The em-dash,
 used well, is a great mark, but it is one that many capable readers (especially
@@ -152,7 +152,7 @@ cleaner, but never simpler.
 - **Modes:** `on` (the default, so installing it is the opt-in), `off` (write
   prose as usual). Control with `/fp-sicem:mode`.
 
-### fp-minify — comments that earn their place, kept short
+### fp-minify: comments that earn their place, kept short
 
 Model-written code is often excellent but over-commented, with inline essays that
 restate what the code plainly does, or paragraph backstories that belong in a
@@ -183,7 +183,7 @@ their place**, and only ever touches comments, never what the code does.
   over a file, dir, or the current focus, and shows what it'll remove before
   deleting a lot at once.
 
-### fp-yoohoo — the terminal comes to you, not the other way round
+### fp-yoohoo: the terminal comes to you, not the other way round
 
 Claude runs for minutes at a stretch, so you switch to something else. Then it
 stops and waits on you, and the session sits idle until you happen to look.
@@ -210,8 +210,8 @@ terminal window to the foreground the moment a prompt needs an answer.
 Every plugin here is **behavioural** and intervenes only at the *edges* of a task,
 before it or after it, never mid-reasoning. They come in three families:
 
-- **Behavioral.** Surface and persist the AI's state, changing nothing about
-  what it decides (`fp-honesty`).
+- **Behavioral.** Surface the AI's state, changing nothing about what it
+  decides (`fp-honesty`).
 - **Influential.** Shape *how* the model approaches a task, but only by setting
   a prior at the task edge that you've consented to (`fp-barbeque`, `fp-minify`,
   `fp-sicem`).
@@ -231,15 +231,16 @@ reuse the same tested code.
 ```
 fp-pluginplaza/
 ├── .claude-plugin/marketplace.json   the hub manifest (lists every plugin)
+├── test/                             repo-wide checks (version bumps, manifest, priors)
 ├── shared/fpbase/                    the substrate (ONE canonical copy)
-│   ├── src/   provenance · state · mode · audit · queue · inject · statusline
-│   └── test/  31 tests, no dependencies
+│   ├── src/   config · mode · provenance · audit · inject · primed · statusline
+│   └── test/  no dependencies, Node built-ins only
 └── plugins/
     └── fp-honesty/
         ├── .claude-plugin/plugin.json
         ├── hooks/
         │   ├── _fpbase  →  symlink to ../../../shared/fpbase/src
-        │   └── inject.js · audit.js · honesty.js · ...
+        │   └── prime.js · inject.js · audit.js · honesty.js · ...
         ├── skills/fp-honesty/SKILL.md
         └── commands/mode.md
 ```
@@ -251,6 +252,14 @@ into the plugin's cache, so an installed plugin is fully self-contained. There
 is no build, no vendoring, and no chance of a stale copy. The filesystem is the
 single source of truth.
 
+**Priors are sent once, then reminded.** A plugin that shapes the model sends
+its full prior from a `SessionStart` hook, which also fires after `/clear` and
+after compaction. Every prompt after that carries only a one-line reminder. If
+the mode changes mid-session (by a typed directive, the `/mode` command, or
+another session), the next prompt sends the full prior for the new mode once.
+This keeps the rules in force through long sessions without paying for the
+whole text on every turn.
+
 ## Adding a plugin
 
 A new plugin is mostly behaviour, not plumbing:
@@ -259,11 +268,14 @@ A new plugin is mostly behaviour, not plumbing:
    and whatever `hooks/` it needs.
 2. `ln -s ../../../shared/fpbase/src plugins/<name>/hooks/_fpbase` if it uses the base.
 3. Add an entry to `.claude-plugin/marketplace.json`.
+4. Bump the plugin's `version` whenever its shipped files change. Claude Code
+   caches installs by version, so an unbumped change never reaches existing
+   users. `npm test` fails if you forget.
 
 ## Develop & test
 
 ```bash
-npm test    # runs the base suite + every plugin's suite, via node --test
+npm test    # repo checks, the base suite and every plugin's suite, via node --test
 ```
 
 No install step is required to run the tests. Everything uses Node built-ins.
